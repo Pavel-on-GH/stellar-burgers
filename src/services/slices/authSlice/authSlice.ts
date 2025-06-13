@@ -105,6 +105,22 @@ export const updateUser = createAsyncThunk<TUser, Partial<TRegisterData>>(
   }
 );
 
+export const checkUserAuth = createAsyncThunk(
+  'auth/checkAuth',
+  async (_, { dispatch }) => {
+    if (localStorage.getItem('refreshToken')) {
+      try {
+        await dispatch(fetchUser());
+      } catch (error) {
+        clearTokens();
+        return Promise.reject(error);
+      }
+    } else {
+      return Promise.reject('No refresh token');
+    }
+  }
+);
+
 const slice = createSlice({
   name: 'auth',
   initialState,
@@ -154,6 +170,13 @@ const slice = createSlice({
       })
       .addCase(updateUser.fulfilled, (state, action) => {
         state.data = action.payload;
+      })
+      .addCase(checkUserAuth.fulfilled, (state) => {
+        state.isAuthChecked = true;
+      })
+      .addCase(checkUserAuth.rejected, (state) => {
+        state.isAuthChecked = true;
+        state.isAuthenticated = false;
       });
   }
 });

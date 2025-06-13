@@ -1,10 +1,13 @@
 import { useDispatch, useSelector } from '../../services/store/store';
 import { ProfileUI } from '@ui-pages';
 import { FC, SyntheticEvent, useEffect, useState } from 'react';
-import { updateUser } from '../../services/slices/authSlice/authSlice';
+import { useNavigate } from 'react-router-dom';
+import { logout, updateUser } from '../../services/slices/authSlice/authSlice';
+import { TUser } from '@utils-types';
 
 export const Profile: FC = () => {
   const dispatch = useDispatch();
+  const navigate = useNavigate();
 
   /** TODO: взять переменную из стора */
   const { data: user } = useSelector((store) => store.authReducer);
@@ -30,8 +33,27 @@ export const Profile: FC = () => {
 
   const handleSubmit = (e: SyntheticEvent) => {
     e.preventDefault();
-
-    dispatch(updateUser(formValue));
+    if (!!formValue.password) {
+      dispatch(updateUser(formValue));
+      dispatch(logout())
+        .unwrap()
+        .then(() => {
+          navigate('/login');
+        })
+        .catch((error) => {
+          console.error('Ошибка при выходе:', error);
+        });
+    } else {
+      dispatch(updateUser(formValue))
+        .unwrap()
+        .then((user: TUser) => {
+          setFormValue({
+            name: user.name,
+            email: user.email,
+            password: ''
+          });
+        });
+    }
   };
 
   const handleCancel = (e: SyntheticEvent) => {
