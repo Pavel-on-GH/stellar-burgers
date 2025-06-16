@@ -13,12 +13,13 @@ import {
   ProfileOrders,
   Profile
 } from '@pages';
-import { AppHeader } from '@components';
+import { AppHeader, IngredientDetails, Modal, OrderInfo } from '@components';
 
 const App = () => (
   <div className={styles.app}>
     <AppHeader />
     <Routes>
+      {/* Роуты страниц */}
       <Route path='/' element={<ConstructorPage />}>
         ConstructorPage
       </Route>
@@ -53,6 +54,40 @@ const App = () => (
 
       <Route path='/*' element={<NotFound404 />}>
         NotFound404
+      </Route>
+
+      {/* Роуты модальных окон */}
+      <Route
+        path='Модальное окно: заказ'
+        element={
+          <Modal title='feed/:number' onClose={() => {}}>
+            <OrderInfo />
+          </Modal>
+        }
+      >
+        Модальное окно: заказ
+      </Route>
+
+      <Route
+        path='/ingredients/:id'
+        element={
+          <Modal title='Модальное окно: ингредиент' onClose={() => {}}>
+            <IngredientDetails />
+          </Modal>
+        }
+      >
+        Модальное окно: ингредиент
+      </Route>
+
+      <Route
+        path='/profile/orders/:number'
+        element={
+          <Modal title='Модальное окно: заказы в профиле' onClose={() => {}}>
+            <OrderInfo />
+          </Modal>
+        }
+      >
+        Модальное окно: заказы в профиле
       </Route>
     </Routes>
   </div>
