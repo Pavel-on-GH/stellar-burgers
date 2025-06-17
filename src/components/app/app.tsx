@@ -1,6 +1,6 @@
 import '../../index.css';
 import styles from './app.module.css';
-import { Route, Routes } from 'react-router-dom';
+import { Route, Routes, useNavigate } from 'react-router-dom';
 
 import {
   ConstructorPage,
@@ -15,82 +15,91 @@ import {
 } from '@pages';
 import { AppHeader, IngredientDetails, Modal, OrderInfo } from '@components';
 
-const App = () => (
-  <div className={styles.app}>
-    <AppHeader />
-    <Routes>
-      {/* Роуты страниц */}
-      <Route path='/' element={<ConstructorPage />}>
-        ConstructorPage
-      </Route>
+const App = () => {
+  const closeModalFunc = useNavigate();
 
-      <Route path='/feed' element={<Feed />}>
-        Feed
-      </Route>
+  return (
+    <div className={styles.app}>
+      <AppHeader />
+      <Routes>
+        {/* Роуты страниц */}
+        <Route path='/' element={<ConstructorPage />}>
+          ConstructorPage
+        </Route>
 
-      <Route path='/login' element={<Login />}>
-        Login
-      </Route>
+        <Route path='/feed' element={<Feed />}>
+          Feed
+        </Route>
 
-      <Route path='/register' element={<Register />}>
-        Register
-      </Route>
+        <Route path='/login' element={<Login />}>
+          Login
+        </Route>
 
-      <Route path='/forgot-password' element={<ForgotPassword />}>
-        ForgotPassword
-      </Route>
+        <Route path='/register' element={<Register />}>
+          Register
+        </Route>
 
-      <Route path='/reset-password' element={<ResetPassword />}>
-        ResetPassword
-      </Route>
+        <Route path='/forgot-password' element={<ForgotPassword />}>
+          ForgotPassword
+        </Route>
 
-      <Route path='/profile' element={<Profile />}>
-        Profile
-      </Route>
+        <Route path='/reset-password' element={<ResetPassword />}>
+          ResetPassword
+        </Route>
 
-      <Route path='/profile/orders' element={<ProfileOrders />}>
-        ProfileOrders
-      </Route>
+        <Route path='/profile' element={<Profile />}>
+          Profile
+        </Route>
 
-      <Route path='/*' element={<NotFound404 />}>
-        NotFound404
-      </Route>
+        <Route path='/profile/orders' element={<ProfileOrders />}>
+          ProfileOrders
+        </Route>
 
-      {/* Роуты модальных окон */}
-      <Route
-        path='Модальное окно: заказ'
-        element={
-          <Modal title='feed/:number' onClose={() => {}}>
-            <OrderInfo />
-          </Modal>
-        }
-      >
-        Модальное окно: заказ
-      </Route>
+        <Route path='/*' element={<NotFound404 />}>
+          NotFound404
+        </Route>
 
-      <Route
-        path='/ingredients/:id'
-        element={
-          <Modal title='Модальное окно: ингредиент' onClose={() => {}}>
-            <IngredientDetails />
-          </Modal>
-        }
-      >
-        Модальное окно: ингредиент
-      </Route>
+        {/* Роуты модальных окон */}
+        <Route
+          path='Модальное окно: заказ'
+          element={
+            <Modal title='feed/:number' onClose={() => closeModalFunc(-1)}>
+              <OrderInfo />
+            </Modal>
+          }
+        >
+          Модальное окно: заказ
+        </Route>
 
-      <Route
-        path='/profile/orders/:number'
-        element={
-          <Modal title='Модальное окно: заказы в профиле' onClose={() => {}}>
-            <OrderInfo />
-          </Modal>
-        }
-      >
-        Модальное окно: заказы в профиле
-      </Route>
-    </Routes>
-  </div>
-);
+        <Route
+          path='/ingredients/:id'
+          element={
+            <Modal
+              title='Модальное окно: ингредиент'
+              onClose={() => closeModalFunc(-1)}
+            >
+              <IngredientDetails />
+            </Modal>
+          }
+        >
+          Модальное окно: ингредиент
+        </Route>
 
+        <Route
+          path='/profile/orders/:number'
+          element={
+            <Modal
+              title='Модальное окно: заказы в профиле'
+              onClose={() => closeModalFunc(-1)}
+            >
+              <OrderInfo />
+            </Modal>
+          }
+        >
+          Модальное окно: заказы в профиле
+        </Route>
+      </Routes>
+    </div>
+  );
+};
 export default App;
