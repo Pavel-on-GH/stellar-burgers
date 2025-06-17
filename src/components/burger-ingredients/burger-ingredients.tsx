@@ -9,7 +9,7 @@ import { fetchIngredients } from '../../services/ingredientsSlice';
 export const BurgerIngredients: FC = () => {
   const dispatch = useDispatch();
   const { ingredients, isLoading, error } = useSelector(
-    (state) => state.ingredients
+    (state) => state.ingredientsReducer
   );
 
   useEffect(() => {
@@ -19,15 +19,15 @@ export const BurgerIngredients: FC = () => {
   }, [dispatch, ingredients.length]);
 
   const buns = useMemo(
-    () => ingredients.filter((i) => i.type === 'bun'),
+    () => ingredients.filter((i: { type: string }) => i.type === 'bun'),
     [ingredients]
   );
   const mains = useMemo(
-    () => ingredients.filter((i) => i.type === 'main'),
+    () => ingredients.filter((i: { type: string }) => i.type === 'main'),
     [ingredients]
   );
   const sauces = useMemo(
-    () => ingredients.filter((i) => i.type === 'sauce'),
+    () => ingredients.filter((i: { type: string }) => i.type === 'sauce'),
     [ingredients]
   );
 
