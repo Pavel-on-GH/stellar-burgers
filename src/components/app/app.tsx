@@ -24,39 +24,39 @@ const App = () => {
       <Routes>
         {/* Роуты страниц */}
         <Route path='/' element={<ConstructorPage />}>
-          ConstructorPage
+          ConstructorPage - страница конструктора
         </Route>
 
         <Route path='/feed' element={<Feed />}>
-          Feed
+          Feed - страница ленты заказов
         </Route>
 
         <Route path='/login' element={<Login />}>
-          Login
+          Login - страница авторизации
         </Route>
 
         <Route path='/register' element={<Register />}>
-          Register
+          Register - страница регистрации
         </Route>
 
         <Route path='/forgot-password' element={<ForgotPassword />}>
-          ForgotPassword
+          ForgotPassword - страница восстановления пароля
         </Route>
 
         <Route path='/reset-password' element={<ResetPassword />}>
-          ResetPassword
+          ResetPassword - страница сброса пароля
         </Route>
 
         <Route path='/profile' element={<Profile />}>
-          Profile
+          Profile - страница профиля
         </Route>
 
         <Route path='/profile/orders' element={<ProfileOrders />}>
-          ProfileOrders
+          ProfileOrders - страница сделанных заказов в профиле
         </Route>
 
         <Route path='/*' element={<NotFound404 />}>
-          NotFound404
+          NotFound404 - страница заглушки с ошибкой
         </Route>
 
         {/* Роуты модальных окон */}
@@ -68,7 +68,7 @@ const App = () => {
             </Modal>
           }
         >
-          Модальное окно: заказ
+          Модальное окно - заказ
         </Route>
 
         <Route
@@ -82,7 +82,7 @@ const App = () => {
             </Modal>
           }
         >
-          Модальное окно: ингредиент
+          Модальное окно - ингредиент
         </Route>
 
         <Route
@@ -96,7 +96,7 @@ const App = () => {
             </Modal>
           }
         >
-          Модальное окно: заказы в профиле
+          Модальное окно - заказы в профиле
         </Route>
       </Routes>
     </div>
