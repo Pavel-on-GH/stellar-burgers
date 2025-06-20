@@ -50,7 +50,6 @@ const App = () => {
     <div className={styles.app}>
       <AppHeader />
       <Routes location={backgroundLocation || location}>
-        {/* Роуты страниц */}
         <Route path='/' element={<ConstructorPage />} />
 
         <Route path='/feed' element={<Feed />} />
@@ -111,7 +110,6 @@ const App = () => {
 
         <Route path='*' element={<NotFound404 />} />
 
-        {/* Роуты модальных окон */}
         <Route
           path='/feed/:number'
           element={
