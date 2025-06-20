@@ -10,15 +10,20 @@ type TBurgerConstructorSlice = {
 
 const newId = () => `${Date.now()}-${Math.random().toString(36).slice(2, 15)}`;
 
+const moveIngredient = <T>(
+  arr: T[],
+  fromIndex: number,
+  toIndex: number
+): void => {
+  const [moved] = arr.splice(fromIndex, 1);
+  arr.splice(toIndex, 0, moved);
+};
+
 const initialState: TBurgerConstructorSlice = {
   constructorItems: {
     bun: null,
     ingredients: []
   }
-};
-
-const moveIngredient = <T>(arr: T[], i: number, j: number): void => {
-  [arr[i], arr[j]] = [arr[j], arr[i]];
 };
 
 export const constructorSlice = createSlice({

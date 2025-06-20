@@ -2,13 +2,13 @@ import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { TIngredient } from '@utils-types';
 import { getIngredientsApi } from '../utils/burger-api';
 
-type IngredientsState = {
+type TIngredientsState = {
   ingredients: TIngredient[];
   isLoading: boolean;
   error: string | undefined | null;
 };
 
-const initialState: IngredientsState = {
+const initialState: TIngredientsState = {
   ingredients: [],
   isLoading: false,
   error: null
@@ -22,13 +22,13 @@ export const fetchIngredients = createAsyncThunk<TIngredient[]>(
   }
 );
 
-const pendingFunc = (state: IngredientsState) => {
+const pendingFunc = (state: TIngredientsState) => {
   state.isLoading = true;
   state.error = null;
 };
 
-const fullfiledFunc = (
-  state: IngredientsState,
+const fulfilledFunc = (
+  state: TIngredientsState,
   action: PayloadAction<TIngredient[]>
 ) => {
   state.ingredients = action.payload;
@@ -37,7 +37,7 @@ const fullfiledFunc = (
 };
 
 const rejectedFunc = (
-  state: IngredientsState,
+  state: TIngredientsState,
   action: { error: { message?: string | undefined | null } }
 ) => {
   state.isLoading = false;
@@ -54,7 +54,7 @@ const ingredientsSlice = createSlice({
   extraReducers: (builder) => {
     builder
       .addCase(fetchIngredients.pending, pendingFunc)
-      .addCase(fetchIngredients.fulfilled, fullfiledFunc)
+      .addCase(fetchIngredients.fulfilled, fulfilledFunc)
       .addCase(fetchIngredients.rejected, rejectedFunc);
   }
 });

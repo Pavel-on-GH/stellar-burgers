@@ -1,6 +1,15 @@
 import '../../index.css';
 import styles from './app.module.css';
-import { Route, Routes, useNavigate } from 'react-router-dom';
+import { useDispatch } from '../../services/store';
+import { useEffect } from 'react';
+import {
+  Routes,
+  Route,
+  useLocation,
+  useNavigate,
+  useMatch
+} from 'react-router-dom';
+import { ProtectedRoute } from '../protected-route/protected-route';
 
 import {
   ConstructorPage,
@@ -13,93 +22,174 @@ import {
   ProfileOrders,
   Profile
 } from '@pages';
+
 import { AppHeader, IngredientDetails, Modal, OrderInfo } from '@components';
 
+import { fetchIngredients } from '../../services/ingredientsSlice';
+import { fetchFeeds } from '../../services/feedSlice';
+import { checkUserAuth } from '../../services/userSlice';
+
 const App = () => {
+  const profileMatch = useMatch('/profile/orders/:number')?.params.number;
+  const feedMatch = useMatch('/feed/:number')?.params.number;
+  const orderNumber = profileMatch || feedMatch;
+  const orderTitle = `#${orderNumber && orderNumber.padStart(6, '0')}`;
+
+  const location = useLocation();
+  const backgroundLocation = location.state?.background;
+  const dispatch = useDispatch();
   const closeModalFunc = useNavigate();
+
+  useEffect(() => {
+    dispatch(fetchIngredients());
+    dispatch(fetchFeeds());
+    dispatch(checkUserAuth());
+  }, [dispatch]);
 
   return (
     <div className={styles.app}>
       <AppHeader />
-      <Routes>
+      <Routes location={backgroundLocation || location}>
         {/* Роуты страниц */}
-        <Route path='/' element={<ConstructorPage />}>
-          ConstructorPage - страница конструктора
-        </Route>
+        <Route path='/' element={<ConstructorPage />} />
 
-        <Route path='/feed' element={<Feed />}>
-          Feed - страница ленты заказов
-        </Route>
+        <Route path='/feed' element={<Feed />} />
 
-        <Route path='/login' element={<Login />}>
-          Login - страница авторизации
-        </Route>
+        <Route
+          path='/login'
+          element={
+            <ProtectedRoute onlyUnAuth>
+              <Login />
+            </ProtectedRoute>
+          }
+        />
 
-        <Route path='/register' element={<Register />}>
-          Register - страница регистрации
-        </Route>
+        <Route
+          path='/register'
+          element={
+            <ProtectedRoute onlyUnAuth>
+              <Register />
+            </ProtectedRoute>
+          }
+        />
 
-        <Route path='/forgot-password' element={<ForgotPassword />}>
-          ForgotPassword - страница восстановления пароля
-        </Route>
+        <Route
+          path='/forgot-password'
+          element={
+            <ProtectedRoute onlyUnAuth>
+              <ForgotPassword />
+            </ProtectedRoute>
+          }
+        />
 
-        <Route path='/reset-password' element={<ResetPassword />}>
-          ResetPassword - страница сброса пароля
-        </Route>
+        <Route
+          path='/reset-password'
+          element={
+            <ProtectedRoute onlyUnAuth>
+              <ResetPassword />
+            </ProtectedRoute>
+          }
+        />
 
-        <Route path='/profile' element={<Profile />}>
-          Profile - страница профиля
-        </Route>
+        <Route
+          path='/profile'
+          element={
+            <ProtectedRoute>
+              <Profile />
+            </ProtectedRoute>
+          }
+        />
 
-        <Route path='/profile/orders' element={<ProfileOrders />}>
-          ProfileOrders - страница сделанных заказов в профиле
-        </Route>
+        <Route
+          path='/profile/orders'
+          element={
+            <ProtectedRoute>
+              <ProfileOrders />
+            </ProtectedRoute>
+          }
+        />
 
-        <Route path='/*' element={<NotFound404 />}>
-          NotFound404 - страница заглушки с ошибкой
-        </Route>
+        <Route path='*' element={<NotFound404 />} />
 
         {/* Роуты модальных окон */}
         <Route
-          path='Модальное окно: заказ'
+          path='/feed/:number'
           element={
-            <Modal title='feed/:number' onClose={() => closeModalFunc(-1)}>
+            <div className={styles.detailPageWrap}>
+              <p
+                className={`text text_type_digits-default ${styles.detailHeader}`}
+              >
+                {orderTitle}
+              </p>
               <OrderInfo />
-            </Modal>
+            </div>
           }
-        >
-          Модальное окно - заказ
-        </Route>
+        />
 
         <Route
           path='/ingredients/:id'
           element={
-            <Modal
-              title='Модальное окно: ингредиент'
-              onClose={() => closeModalFunc(-1)}
-            >
+            <div className={styles.detailPageWrap}>
+              <p className={`text text_type_main-large ${styles.detailHeader}`}>
+                Детали ингредиента
+              </p>
               <IngredientDetails />
-            </Modal>
+            </div>
           }
-        >
-          Модальное окно - ингредиент
-        </Route>
+        />
 
         <Route
           path='/profile/orders/:number'
           element={
-            <Modal
-              title='Модальное окно: заказы в профиле'
-              onClose={() => closeModalFunc(-1)}
-            >
+            <div className={styles.detailPageWrap}>
+              <p
+                className={`text text_type_digits-default ${styles.detailHeader}`}
+              >
+                {orderTitle}
+              </p>
               <OrderInfo />
-            </Modal>
+            </div>
           }
-        >
-          Модальное окно - заказы в профиле
-        </Route>
+        />
       </Routes>
+
+      {backgroundLocation && (
+        <Routes>
+          <Route
+            path='/ingredients/:id'
+            element={
+              <Modal
+                title='Детали ингредиента'
+                onClose={() => closeModalFunc(-1)}
+              >
+                <IngredientDetails />
+              </Modal>
+            }
+          />
+
+          <Route
+            path='/feed/:number'
+            element={
+              <Modal title={orderTitle} onClose={() => closeModalFunc(-1)}>
+                <OrderInfo />
+              </Modal>
+            }
+          />
+
+          <Route
+            path='/profile/orders/:number'
+            element={
+              <ProtectedRoute>
+                <Modal title={orderTitle} onClose={() => closeModalFunc(-1)}>
+                  <OrderInfo />
+                </Modal>
+              </ProtectedRoute>
+            }
+          />
+        </Routes>
+      )}
     </div>
   );
 };
+
 export default App;
