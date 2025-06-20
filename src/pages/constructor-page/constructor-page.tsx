@@ -1,6 +1,6 @@
 import { useSelector } from '../../services/store';
+
 import styles from './constructor-page.module.css';
-import { RootState } from '../../services/store';
 
 import { BurgerIngredients } from '../../components';
 import { BurgerConstructor } from '../../components';
@@ -8,9 +8,8 @@ import { Preloader } from '../../components/ui';
 import { FC } from 'react';
 
 export const ConstructorPage: FC = () => {
-  const isIngredientsLoading = useSelector(
-    (state: RootState) => state.ingredientsReducer.isLoading
-  );
+  /** TODO: взять переменную из стора */
+  const isIngredientsLoading = false;
 
   return (
     <>
