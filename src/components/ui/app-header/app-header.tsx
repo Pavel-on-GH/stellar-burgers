@@ -19,7 +19,8 @@ export const AppHeaderUI: FC<TAppHeaderUIProps> = ({ userName }) => {
   const constructorLink =
     location.pathname === '/' || location.pathname.startsWith('/ingredients');
   const feedLink = location.pathname.startsWith('/feed');
-  const profileLink = location.pathname.startsWith('/profile');
+  const profileLink =
+    location.pathname.startsWith('/profile') || location.pathname === '/login';
 
   return (
     <header className={styles.header}>
@@ -33,8 +34,12 @@ export const AppHeaderUI: FC<TAppHeaderUIProps> = ({ userName }) => {
               styles.link_active
             )}
           >
-            <BurgerIcon type='primary' />
-            <p className='text text_type_main-default ml-2 mr-10'>
+            <BurgerIcon type={constructorLink ? 'primary' : 'secondary'} />
+            <p
+              className={`text text_type_main-default ml-2 mr-10 ${
+                constructorLink ? 'text_color_primary' : 'text_color_inactive'
+              }`}
+            >
               Конструктор
             </p>
           </NavLink>
@@ -43,8 +48,14 @@ export const AppHeaderUI: FC<TAppHeaderUIProps> = ({ userName }) => {
             to='/feed'
             className={classNames(styles.link, feedLink, styles.link_active)}
           >
-            <ListIcon type='primary' />
-            <p className='text text_type_main-default ml-2'>Лента заказов</p>
+            <ListIcon type={feedLink ? 'primary' : 'secondary'} />
+            <p
+              className={`text text_type_main-default ml-2 ${
+                feedLink ? 'text_color_primary' : 'text_color_inactive'
+              }`}
+            >
+              Лента заказов
+            </p>
           </NavLink>
         </div>
 
@@ -59,8 +70,12 @@ export const AppHeaderUI: FC<TAppHeaderUIProps> = ({ userName }) => {
             to='/profile'
             className={classNames(styles.link, profileLink, styles.link_active)}
           >
-            <ProfileIcon type='primary' />
-            <p className='text text_type_main-default ml-2'>
+            <ProfileIcon type={profileLink ? 'primary' : 'secondary'} />
+            <p
+              className={`text text_type_main-default ml-2 ${
+                profileLink ? 'text_color_primary' : 'text_color_inactive'
+              }`}
+            >
               {userName || 'Личный кабинет'}
             </p>
           </NavLink>

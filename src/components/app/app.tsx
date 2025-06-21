@@ -26,7 +26,6 @@ import {
 import { AppHeader, IngredientDetails, Modal, OrderInfo } from '@components';
 
 import { fetchIngredients } from '../../services/ingredientsSlice';
-import { fetchFeeds } from '../../services/feedSlice';
 import { checkUserAuth } from '../../services/userSlice';
 
 const App = () => {
@@ -42,7 +41,6 @@ const App = () => {
 
   useEffect(() => {
     dispatch(fetchIngredients());
-    dispatch(fetchFeeds());
     dispatch(checkUserAuth());
   }, [dispatch]);
 
