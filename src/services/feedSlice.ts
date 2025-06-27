@@ -2,7 +2,7 @@ import { createSlice, PayloadAction, createAsyncThunk } from '@reduxjs/toolkit';
 import { getFeedsApi, TFeedsResponse } from '@api';
 import { TOrder } from '@utils-types';
 
-type TFeedState = {
+export type TFeedState = {
   orders: TOrder[];
   totalOrders: number;
   ordersToday: number;
@@ -10,7 +10,7 @@ type TFeedState = {
   error: string | null | undefined;
 };
 
-const initialState: TFeedState = {
+export const initialState: TFeedState = {
   orders: [],
   totalOrders: 0,
   ordersToday: 0,
@@ -27,7 +27,9 @@ export const fetchFeeds = createAsyncThunk<
     const data = await getFeedsApi();
     return data;
   } catch {
-    return rejectWithValue('Ошибка');
+    return rejectWithValue(
+      'Ошибка загрузки данных с сервера. Попробуйте обновить страницу.'
+    );
   }
 });
 
@@ -55,7 +57,14 @@ const rejectedFeeds = (
   }
 ) => {
   state.isLoading = false;
-  state.error = action.error.message;
+
+  if (action.payload) {
+    state.error = action.payload;
+  } else if (action.error.message) {
+    state.error = `Ошибка сети: ${action.error.message}`;
+  } else {
+    state.error = 'Произошла неизвестная ошибка при загрузке заказов.';
+  }
 };
 
 export const feedSlice = createSlice({

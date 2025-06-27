@@ -1,14 +1,15 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { TConstructorIngredient, TIngredient } from '@utils-types';
+import { v4 as uuidv4 } from 'uuid';
 
-type TBurgerConstructorSlice = {
+export type TBurgerConstructorSlice = {
   constructorItems: {
     bun: TConstructorIngredient | null;
     ingredients: TConstructorIngredient[];
   };
 };
 
-const newId = () => `${Date.now()}-${Math.random().toString(36).slice(2, 15)}`;
+const newId = () => uuidv4();
 
 const moveIngredient = <T>(
   arr: T[],

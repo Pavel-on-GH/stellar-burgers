@@ -11,7 +11,7 @@ import {
 } from '@api';
 import { setCookie, getCookie, deleteCookie } from '../utils/cookie';
 
-type TUserState = {
+export type TUserState = {
   isAuth: boolean;
   authStatus: boolean;
   data: TUser | null;
@@ -23,7 +23,7 @@ type TUserState = {
   updateUserRequest: boolean;
 };
 
-const initialState: TUserState = {
+export const initialState: TUserState = {
   isAuth: false,
   authStatus: false,
   data: null,
@@ -53,7 +53,7 @@ const rejectedRegister = (
   action: { payload?: string | null | undefined }
 ) => {
   state.registerUserRequest = false;
-  state.registerUserError = action.payload ?? 'Ошибка';
+  state.registerUserError = action.payload ?? 'Ошибка при регистрации';
 };
 
 const pendingLogin = (state: TUserState) => {
@@ -74,7 +74,7 @@ const rejectedLogin = (
   action: { payload?: string | null | undefined }
 ) => {
   state.loginUserRequest = false;
-  state.loginUserError = action.payload ?? 'Ошибка';
+  state.loginUserError = action.payload ?? 'Ошибка при входе';
   state.isAuth = true;
 };
 
@@ -94,7 +94,7 @@ const rejectedUpdate = (
   action: { payload?: string | null }
 ) => {
   state.updateUserRequest = false;
-  state.updateUserError = action.payload ?? 'Ошибка';
+  state.updateUserError = action.payload ?? 'Ошибка при обновлении';
 };
 
 export const registerUser = createAsyncThunk<

@@ -13,7 +13,7 @@ type TOrderState = {
   orderError: string | null | undefined;
 };
 
-const initialState: TOrderState = {
+export const initialState: TOrderState = {
   currentOrder: null,
   orderModalData: null,
   ordersHistory: [],
@@ -30,8 +30,11 @@ export const createOrder = createAsyncThunk<
   try {
     const orderData = await orderBurgerApi(ingredients);
     return orderData.order;
-  } catch (error) {
-    return rejectWithValue('Ошибка');
+  } catch (error: any) {
+    if (error?.message) {
+      return rejectWithValue(`Ошибка создания заказа: ${error.message}`);
+    }
+    return rejectWithValue('Ошибка создания заказа. Попробуйте позже.');
   }
 });
 
@@ -43,8 +46,15 @@ export const fetchOrderNumber = createAsyncThunk<
   try {
     const orderData = await getOrderByNumberApi(orderNumber);
     return orderData.orders[0];
-  } catch (error) {
-    return rejectWithValue('Ошибка');
+  } catch (error: any) {
+    if (error?.message) {
+      return rejectWithValue(
+        `Ошибка загрузки заказа №${orderNumber}: ${error.message}`
+      );
+    }
+    return rejectWithValue(
+      `Ошибка загрузки заказа №${orderNumber}. Попробуйте позже.`
+    );
   }
 });
 
@@ -56,12 +66,19 @@ export const fetchOrdersHistory = createAsyncThunk<
   try {
     const orderData = await getOrdersApi();
     return orderData;
-  } catch (error) {
-    return rejectWithValue('Ошибка');
+  } catch (error: any) {
+    if (error?.message) {
+      return rejectWithValue(
+        `Ошибка загрузки истории заказов: ${error.message}`
+      );
+    }
+    return rejectWithValue(
+      'Ошибка загрузки истории заказов. Попробуйте позже.'
+    );
   }
 });
 
-const setPending = (
+export const setPending = (
   state: TOrderState,
   key: 'orderRequest' | 'ordersHistoryRequest'
 ) => {
@@ -69,16 +86,18 @@ const setPending = (
   state.orderError = null;
 };
 
-const setRejected = (
+export const setRejected = (
   state: TOrderState,
   action: PayloadAction<string | undefined>,
   key: 'orderRequest' | 'ordersHistoryRequest'
 ) => {
   state[key] = false;
-  state.orderError = action.payload || 'Ошибка';
+  state.orderError =
+    action.payload ??
+    'Произошла неизвестная ошибка при обработке запроса. Пожалуйста, попробуйте снова.';
 };
 
-const createOrderFulfilled = (
+export const createOrderFulfilled = (
   state: TOrderState,
   action: PayloadAction<TOrder>
 ) => {
@@ -86,7 +105,7 @@ const createOrderFulfilled = (
   state.orderModalData = action.payload;
 };
 
-const fetchOrderNumberFulfilled = (
+export const fetchOrderNumberFulfilled = (
   state: TOrderState,
   action: PayloadAction<TOrder>
 ) => {
@@ -102,7 +121,7 @@ const fetchOrdersHistoryFulfilled = (
   state.ordersHistory = action.payload;
 };
 
-const orderSlice = createSlice({
+const ordersSlice = createSlice({
   name: 'order',
   initialState,
   reducers: {
@@ -141,7 +160,7 @@ const orderSlice = createSlice({
   }
 });
 
-export const { clearOrder, clearOrderModal } = orderSlice.actions;
+export const { clearOrder, clearOrderModal } = ordersSlice.actions;
 
 export const dataSelector = (number: string) => (state: RootState) => {
   const num = Number(number);
@@ -153,4 +172,4 @@ export const dataSelector = (number: string) => (state: RootState) => {
   );
 };
 
-export const orderReducer = orderSlice.reducer;
+export const orderReducer = ordersSlice.reducer;
